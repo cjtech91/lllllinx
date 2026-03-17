@@ -33,7 +33,9 @@ Run these commands in the SSH terminal:
 
 ```bash
 sudo apt update
-sudo apt install -y python3 python3-venv python3-pip nodejs npm yarn nginx git
+sudo apt install -y python3 python3-venv python3-pip python3-dev \
+  build-essential gcc g++ make gfortran pkg-config libopenblas-dev liblapack-dev \
+  nodejs npm yarn nginx git
 ```
 
 > If `yarn` is missing after install:
@@ -65,13 +67,16 @@ cd /opt/pisofi-commander
 cd /opt/pisofi-commander/backend
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+python -m pip install --upgrade pip setuptools wheel
+
+# Low-CPU runtime install (recommended on Orange Pi / Raspberry Pi)
+pip install fastapi==0.110.1 uvicorn==0.25.0 'python-dotenv>=1.0.1' 'pydantic>=2.6.4'
 ```
 
 Create backend env file:
 
 ```bash
-cp .env .env.prod
+nano .env.prod
 ```
 
 Edit `.env.prod` and ensure:
@@ -85,6 +90,7 @@ CORS_ORIGINS="*"
 > Notes:
 > - The app now uses SQLite (`backend/pisofi.db`) for PisoFi data.
 > - Keep `MONGO_URL` present to match existing app expectations.
+> - If you still want full `requirements.txt`, install compilers from step 3 first, then run `pip install -r requirements.txt`.
 
 ---
 
